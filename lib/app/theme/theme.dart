@@ -12,20 +12,23 @@ import 'package:flutter/material.dart';
 class AppTheme {
   AppTheme._();
   static ThemeData lightTheme = ThemeData(
-    useMaterial3: true,
-    brightness: Brightness.light,
-    primaryColor: Colors.blue,
-    scaffoldBackgroundColor: Colors.white,
-    textTheme: MyTextTheme.lightTextTheme,
-    chipTheme: MyChipTheme.lightChipTheme,
-    appBarTheme: MyAppbarTheme.lightAppBarTheme,
-    checkboxTheme: MyCheckBoxTheme.lightCheckBoxTheme,
-    bottomSheetTheme: MyBottomSheetTheme.lightBottomSheetTheme,
-    elevatedButtonTheme: MyElevatedButtonTheme.lightElevatedButtonTheme,
-    outlinedButtonTheme: MyOutlinedButtonTheme.lightOutlinedButtonTheme,
-    inputDecorationTheme: MyTextFormFieldTheme.lightInputDecorationTheme,
-    textButtonTheme: MyTextButtonTheme.lightTextButtonTheme,
-  );
+      useMaterial3: true,
+      brightness: Brightness.light,
+      primaryColor: Colors.blue,
+      scaffoldBackgroundColor: const Color.fromARGB(255, 231, 241, 248),
+      textTheme: MyTextTheme.lightTextTheme,
+      chipTheme: MyChipTheme.lightChipTheme,
+      appBarTheme: MyAppbarTheme.lightAppBarTheme,
+      checkboxTheme: MyCheckBoxTheme.lightCheckBoxTheme,
+      bottomSheetTheme: MyBottomSheetTheme.lightBottomSheetTheme,
+      elevatedButtonTheme: MyElevatedButtonTheme.lightElevatedButtonTheme,
+      outlinedButtonTheme: MyOutlinedButtonTheme.lightOutlinedButtonTheme,
+      inputDecorationTheme: MyTextFormFieldTheme.lightInputDecorationTheme,
+      textButtonTheme: MyTextButtonTheme.lightTextButtonTheme,
+      tabBarTheme: TabBarTheme(
+        indicatorColor: Colors.blue,
+        labelColor: Colors.blue,
+      ));
   static ThemeData darkTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,

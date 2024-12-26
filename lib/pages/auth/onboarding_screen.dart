@@ -1,4 +1,4 @@
-import 'package:expanse_tracker/pages/login_screen.dart';
+import 'package:expanse_tracker/pages/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -50,19 +50,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         },
         children: [
           _buildPage(
-            image: 'assets/images/money.png',
+            image: 'assets/images/wallet.png',
             title: 'Welcome to Expendi',
             description:
                 'Take Charge of Your Spending Effortlessly and Track Your Expenses',
           ),
           _buildPage(
-            image: 'assets/images/money.png',
+            image: 'assets/images/bar.png',
             title: 'Take Control of Your Finances',
             description:
                 'Track, Manage, and Analyze Your Expenses with Ease and like a Pro',
           ),
           _buildPage(
-            image: 'assets/images/money.png',
+            image: 'assets/images/security.png',
             title: 'Your Data is Secure',
             description:
                 'Peace of Mind with Secure Data Protection, We Prioritize Your Privacy',
@@ -126,7 +126,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     //   child: Text('Skip'),
     // );
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 25, horizontal: 25),
+      padding: EdgeInsets.symmetric(vertical: 35, horizontal: 12),
       child: ElevatedButton(
         onPressed: _nextPage,
         child: Text(_currentIndex == 2 ? 'Get Started' : 'Next'),

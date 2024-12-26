@@ -1,4 +1,6 @@
 import 'package:expanse_tracker/core/components/wallet_card.dart';
+import 'package:expanse_tracker/pages/wallet/add_bank_account_screen.dart';
+import 'package:expanse_tracker/pages/wallet/cash_wallet_screen.dart';
 import 'package:flutter/material.dart';
 
 class WalletScreen extends StatelessWidget {
@@ -15,7 +17,7 @@ class WalletScreen extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.all(20),
             decoration: const BoxDecoration(
-                color: Color(0xff1058ed),
+                color: Colors.blue,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(24),
                   bottomRight: Radius.circular(24),
@@ -45,7 +47,7 @@ class WalletScreen extends StatelessWidget {
           ),
 
           // My Wallets Section
-          const Padding(
+          Padding(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,6 +63,8 @@ class WalletScreen extends StatelessWidget {
                   walletName: 'Cash Wallet',
                   balance: '\$5,555',
                   icon: Icons.wallet,
+                  onPressed: () =>
+                      Navigator.pushNamed(context, CashWalletScreen.routeName),
                 ),
                 WalletCard(
                   walletName: 'Goldman Sachs',
@@ -80,8 +84,13 @@ class WalletScreen extends StatelessWidget {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ElevatedButton.icon(
-          icon: const Icon(Icons.add_circle),
-          onPressed: () {},
+          icon: const Icon(
+            Icons.add_circle,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigator.pushNamed(context, LinkBankAccountScreen.routeName);
+          },
           style: ElevatedButton.styleFrom(),
           label: const Text(
             'Link bank account',

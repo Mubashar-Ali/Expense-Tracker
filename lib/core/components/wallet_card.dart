@@ -4,9 +4,11 @@ class WalletCard extends StatelessWidget {
   final String walletName;
   final String balance;
   final IconData icon;
+  final VoidCallback? onPressed;
 
   const WalletCard(
       {super.key,
+      this.onPressed,
       required this.walletName,
       required this.balance,
       required this.icon});
@@ -54,7 +56,7 @@ class WalletCard extends StatelessWidget {
               ),
             ),
             trailing: IconButton(
-                onPressed: () {},
+                onPressed: onPressed,
                 icon: const Icon(
                   Icons.arrow_forward_ios,
                   size: 16,

@@ -1,3 +1,4 @@
+import 'package:expanse_tracker/pages/home/transactions_screen.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -10,16 +11,11 @@ class StatisticsScreen extends StatelessWidget {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
+          automaticallyImplyLeading: false,
           centerTitle: true,
           title: const Text(
             "Statistics",
             style: TextStyle(color: Colors.black),
-          ),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () {},
           ),
           actions: [
             IconButton(
@@ -28,9 +24,6 @@ class StatisticsScreen extends StatelessWidget {
             ),
           ],
           bottom: const TabBar(
-            indicatorColor: Colors.black,
-            labelColor: Colors.black,
-            unselectedLabelColor: Colors.grey,
             tabs: [
               Tab(text: "All"),
               Tab(text: "Income"),
@@ -88,7 +81,7 @@ class _AllTab extends StatelessWidget {
         ),
       ),
       transactions: const [
-        _TransactionItem(
+        TransactionItem(
           icon: Icons.movie,
           title: "Entertainment",
           subtitle: "Movies at the Mall",
@@ -96,7 +89,7 @@ class _AllTab extends StatelessWidget {
           time: "10:00 AM",
           color: Colors.green,
         ),
-        _TransactionItem(
+        TransactionItem(
           icon: Icons.shopping_bag,
           title: "Shopping",
           subtitle: "Shoppers stop clothes",
@@ -104,7 +97,7 @@ class _AllTab extends StatelessWidget {
           time: "09:00 PM",
           color: Colors.orange,
         ),
-        _TransactionItem(
+        TransactionItem(
           icon: Icons.fastfood,
           title: "Food",
           subtitle: "Dinner at Kennys",
@@ -162,7 +155,7 @@ class _IncomeTab extends StatelessWidget {
         ),
       ),
       transactions: const [
-        _TransactionItem(
+        TransactionItem(
           icon: Icons.monetization_on,
           title: "Salary",
           subtitle: "Main Income",
@@ -170,7 +163,7 @@ class _IncomeTab extends StatelessWidget {
           time: "10:00 AM",
           color: Colors.green,
         ),
-        _TransactionItem(
+        TransactionItem(
           icon: Icons.attach_money,
           title: "Side Hustle",
           subtitle: "Part-time Job",
@@ -178,7 +171,7 @@ class _IncomeTab extends StatelessWidget {
           time: "09:00 PM",
           color: Colors.orange,
         ),
-        _TransactionItem(
+        TransactionItem(
           icon: Icons.account_balance_wallet,
           title: "Extra",
           subtitle: "Rental Property",
@@ -223,7 +216,7 @@ class _ExpenseTab extends StatelessWidget {
         ),
       ),
       transactions: const [
-        _TransactionItem(
+        TransactionItem(
           icon: Icons.restaurant,
           title: "Food",
           subtitle: "Dinner at Kennys",
@@ -231,7 +224,7 @@ class _ExpenseTab extends StatelessWidget {
           time: "08:00 PM",
           color: Colors.blue,
         ),
-        _TransactionItem(
+        TransactionItem(
           icon: Icons.flight,
           title: "Travel",
           subtitle: "Vacation Tickets",
@@ -239,7 +232,7 @@ class _ExpenseTab extends StatelessWidget {
           time: "10:00 AM",
           color: Colors.red,
         ),
-        _TransactionItem(
+        TransactionItem(
           icon: Icons.receipt,
           title: "Bills",
           subtitle: "Electricity Payment",
@@ -255,7 +248,7 @@ class _ExpenseTab extends StatelessWidget {
 class _StatisticsTab extends StatelessWidget {
   final String balance;
   final Widget chartWidget;
-  final List<_TransactionItem> transactions;
+  final List<TransactionItem> transactions;
 
   const _StatisticsTab({
     required this.balance,
@@ -265,66 +258,69 @@ class _StatisticsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Column(
-              children: [
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: DropdownButton<String>(
-                    value: "Weekly",
-                    icon: const Icon(Icons.keyboard_arrow_down),
-                    underline: const SizedBox(),
-                    items: const [
-                      DropdownMenuItem(value: "Weekly", child: Text("Weekly")),
-                      DropdownMenuItem(
-                          value: "Monthly", child: Text("Monthly")),
-                    ],
-                    onChanged: null,
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: DropdownButton<String>(
+                      value: "Weekly",
+                      icon: const Icon(Icons.keyboard_arrow_down),
+                      underline: const SizedBox(),
+                      items: const [
+                        DropdownMenuItem(
+                            value: "Weekly", child: Text("Weekly")),
+                        DropdownMenuItem(
+                            value: "Monthly", child: Text("Monthly")),
+                      ],
+                      onChanged: null,
+                    ),
                   ),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    height: 200,
+                    child: chartWidget,
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "Recent Transactions",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  height: 200,
-                  child: chartWidget,
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, TransactionsScreen.routeName);
+                  },
+                  child: const Text("View All"),
                 ),
-                const SizedBox(height: 20),
               ],
             ),
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                "Recent Transactions",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              TextButton(
-                onPressed: () {},
-                child: const Text("View All"),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Expanded(
-            child: ListView(children: transactions),
-          ),
-        ],
+            const SizedBox(height: 10),
+            ...transactions,
+          ],
+        ),
       ),
     );
   }
 }
 
-class _TransactionItem extends StatelessWidget {
+class TransactionItem extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
@@ -332,7 +328,8 @@ class _TransactionItem extends StatelessWidget {
   final String time;
   final Color color;
 
-  const _TransactionItem({
+  const TransactionItem({
+    super.key,
     required this.icon,
     required this.title,
     required this.subtitle,
@@ -343,23 +340,33 @@ class _TransactionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: color.withOpacity(0.2),
-        child: Icon(icon, color: color),
+    return Container(
+      margin: EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
       ),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-      subtitle: Text(subtitle),
-      trailing: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(amount,
-              style: TextStyle(
-                  color: amount.startsWith('+') ? Colors.green : Colors.red,
-                  fontWeight: FontWeight.bold)),
-          Text(time, style: const TextStyle(color: Colors.grey, fontSize: 12)),
-        ],
+      child: ListTile(
+        // minTileHeight: 0,
+        // contentPadding: EdgeInsets.zero,
+        leading: CircleAvatar(
+          backgroundColor: color.withOpacity(0.2),
+          child: Icon(icon, color: color),
+        ),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        subtitle: Text(subtitle),
+        trailing: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(amount,
+                style: TextStyle(
+                    color: amount.startsWith('+') ? Colors.green : Colors.red,
+                    fontWeight: FontWeight.bold)),
+            Text(time,
+                style: const TextStyle(color: Colors.grey, fontSize: 12)),
+          ],
+        ),
       ),
     );
   }

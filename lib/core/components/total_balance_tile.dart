@@ -1,3 +1,4 @@
+import 'package:expanse_tracker/pages/home/transactions_screen.dart';
 import 'package:flutter/material.dart';
 
 class TotalBalanceTile extends StatelessWidget {
@@ -27,7 +28,9 @@ class TotalBalanceTile extends StatelessWidget {
         ],
       ),
       trailing: TextButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, TransactionsScreen.routeName);
+        },
         child: const Text(
           "View All",
           style: TextStyle(color: Colors.blueAccent),

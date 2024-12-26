@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 
 class GoalTile extends StatelessWidget {
-  const GoalTile({super.key});
+  const GoalTile(
+      {super.key,
+      required this.title,
+      required this.color,
+      required this.icon});
+
+  final String title;
+  final Color color;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -15,18 +23,30 @@ class GoalTile extends StatelessWidget {
           height: 40,
           width: 40,
           decoration: BoxDecoration(
-            color: Colors.blue.withValues(alpha: 0.3),
+            color: color.withValues(alpha: 0.3),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: const Icon(
-            Icons.local_play_rounded,
+          child: Icon(
+            icon,
           ),
         ),
-        title: LinearProgressIndicator(
-          borderRadius: BorderRadius.circular(12),
-          value: 0.7,
-          valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
-          backgroundColor: Colors.grey[200],
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              textAlign: TextAlign.start,
+              title,
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+            ),
+            SizedBox(height: 8),
+            LinearProgressIndicator(
+              borderRadius: BorderRadius.circular(12),
+              value: 0.7,
+              valueColor: AlwaysStoppedAnimation<Color>(color),
+              backgroundColor: Colors.grey[200],
+            ),
+          ],
         ),
         subtitle: const Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

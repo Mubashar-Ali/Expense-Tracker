@@ -1,6 +1,8 @@
-import 'package:expanse_tracker/pages/home_screen.dart';
-import 'package:expanse_tracker/pages/stats_screen.dart';
-import 'package:expanse_tracker/pages/wallet_screen.dart';
+import 'package:expanse_tracker/core/constants/colors.dart';
+import 'package:expanse_tracker/pages/home/home_screen.dart';
+import 'package:expanse_tracker/pages/profile/profile_screen.dart';
+import 'package:expanse_tracker/pages/stat/stats_screen.dart';
+import 'package:expanse_tracker/pages/wallet/wallet_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -18,9 +20,9 @@ class _NavigationMenuState extends State<NavigationMenu> {
 
   final screens = [
     HomeScreen(),
-    // AddEditJobScreen(),
     const StatisticsScreen(),
     const WalletScreen(),
+    ProfileScreen(),
   ];
 
   @override
@@ -30,7 +32,7 @@ class _NavigationMenuState extends State<NavigationMenu> {
       bottomNavigationBar: NavigationBar(
         animationDuration: const Duration(seconds: 2),
         indicatorColor: Colors.transparent,
-        // backgroundColor: dark ? Colors.black : Colors.white,
+        backgroundColor: Colors.white,
         height: 60,
         selectedIndex: selectedIndex,
         onDestinationSelected: (value) {
@@ -44,23 +46,31 @@ class _NavigationMenuState extends State<NavigationMenu> {
             label: "Home",
             selectedIcon: Icon(
               Iconsax.home5,
-              // color: dark ? Colors.lightBlue : MyColors.secondary,
+              color: MyColors.primary,
             ),
           ),
           NavigationDestination(
-            icon: const Icon(Iconsax.profile_circle),
+            icon: const Icon(Icons.bar_chart_outlined),
             label: "Statistics",
             selectedIcon: Icon(
-              Iconsax.chart,
-              // color: dark ? Colors.lightBlue : MyColors.secondary,
+              Icons.bar_chart_sharp,
+              color: MyColors.primary,
             ),
           ),
           NavigationDestination(
-            icon: const Icon(Iconsax.profile_circle),
+            icon: const Icon(Iconsax.wallet),
             label: "Wallet",
             selectedIcon: Icon(
               Iconsax.wallet,
-              // color: dark ? Colors.lightBlue : MyColors.secondary,
+              color: MyColors.primary,
+            ),
+          ),
+          NavigationDestination(
+            icon: const Icon(Iconsax.profile_circle),
+            label: "Profile",
+            selectedIcon: Icon(
+              Iconsax.profile_circle5,
+              color: MyColors.primary,
             ),
           ),
         ],

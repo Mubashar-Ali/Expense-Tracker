@@ -2,8 +2,11 @@ import 'package:expanse_tracker/core/components/goal_tile.dart';
 import 'package:expanse_tracker/core/components/income_expense_row.dart';
 import 'package:expanse_tracker/core/components/section_tile.dart';
 import 'package:expanse_tracker/core/components/total_balance_tile.dart';
+import 'package:expanse_tracker/pages/home/add_budget.dart';
+import 'package:expanse_tracker/pages/home/all_goals.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -13,11 +16,8 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 241, 247, 252),
       appBar: AppBar(
-        surfaceTintColor: Colors.transparent,
-        backgroundColor: const Color.fromARGB(255, 241, 247, 252),
-        leadingWidth: 50,
+        leadingWidth: 70,
         leading: const Padding(
           padding: EdgeInsets.all(8.0),
           child: CircleAvatar(
@@ -25,12 +25,13 @@ class HomeScreen extends StatelessWidget {
                 "https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D"),
           ),
         ),
+        titleSpacing: 0,
         title: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               "Hello",
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
             ),
             Text(
               "Charles David",
@@ -41,7 +42,7 @@ class HomeScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.notifications),
+            icon: const Icon(Iconsax.notification),
           ),
         ],
       ),
@@ -62,17 +63,37 @@ class HomeScreen extends StatelessWidget {
             children: [
               const SectionTitle(title: "Goals"),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, AllGoals.routeName);
+                },
                 child: const Text("View All"),
               ),
             ],
           ),
-          const GoalTile(),
+          const GoalTile(
+            color: Colors.blue,
+            icon: Icons.local_play,
+            title: "Play Station",
+          ),
+          SizedBox(height: 10),
+          const GoalTile(
+            color: Colors.green,
+            icon: Icons.phone_android,
+            title: "Iphone",
+          ),
+          SizedBox(height: 10),
+          const GoalTile(
+            color: Colors.orange,
+            icon: Icons.car_rental,
+            title: "Fortuner",
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         shape: const CircleBorder(),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, AddBudget.routeName);
+        },
         backgroundColor: Colors.blueAccent,
         child: const Icon(
           Icons.add,
