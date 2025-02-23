@@ -1,6 +1,8 @@
+import 'package:expanse_tracker/core/components/navigation_menu.dart';
 import 'package:expanse_tracker/core/constants/colors.dart';
+import 'package:expanse_tracker/core/utils/snack_bar_util.dart';
 import 'package:expanse_tracker/pages/auth/singup_screen.dart';
-import 'package:expanse_tracker/services/auth_service.dart';
+import 'package:expanse_tracker/view_model/auth_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -24,27 +26,6 @@ class _LoginScreenState extends State<LoginScreen> {
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
-  }
-
-  login(BuildContext context) {
-    // try login
-    try {
-      AuthService()
-          .signIn(emailController.text, passwordController.text, context);
-    }
-
-    // chatch any errors
-    catch (error) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text("Error"),
-            content: Text("$error"),
-          );
-        },
-      );
-    }
   }
 
   @override
@@ -123,10 +104,22 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () => login(context),
+                onPressed: () async {
+                  try {
+                    await AuthViewModel().signIn(
+                        emailController.text, passwordController.text, context);
+                    Navigator.pushNamed(context, NavigationMenu.routeName);
+                  } catch (e) {
+                    SnackbarUtil.showError(
+                        context, "Login Failed", e.toString());
+                  }
+                },
                 child: Text(
-                  'Sign In',
-                  style: TextStyle(fontSize: 16),
+                  "Log In",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: Colors.white),
                 ),
               ),
             ),

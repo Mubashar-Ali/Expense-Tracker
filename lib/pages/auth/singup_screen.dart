@@ -1,5 +1,7 @@
 import 'package:expanse_tracker/core/constants/colors.dart';
-import 'package:expanse_tracker/services/auth_service.dart';
+import 'package:expanse_tracker/core/utils/snack_bar_util.dart';
+import 'package:expanse_tracker/pages/home/home_screen.dart';
+import 'package:expanse_tracker/view_model/auth_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -26,23 +28,6 @@ class _SignupScreenState extends State<SignupScreen> {
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
-  }
-
-  void signUp(BuildContext context) {
-    try {
-      AuthService().signUp(nameController.text, emailController.text,
-          passwordController.text, context);
-    } catch (error) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text("Error"),
-            content: Text("$error\n${error.toString()}"),
-          );
-        },
-      );
-    }
   }
 
   @override
@@ -137,14 +122,34 @@ class _SignupScreenState extends State<SignupScreen> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                ),
-                onPressed: () => signUp(context),
-                child: Text(
-                  'Create Account',
-                  style: TextStyle(fontSize: 16),
-                ),
+                onPressed: () async {
+                  if (isCheck.value) {
+                    try {
+                      await AuthViewModel().signUp(emailController.text,
+                          passwordController.text, context);
+                      Navigator.pushNamed(context, HomeScreen.routeName);
+
+                      SnackbarUtil.showSuccess(
+                        context,
+                        "Sign Up Successful!",
+                        "Congratulations! Your account has been created successfully.",
+                      );
+                    } catch (e) {
+                      SnackbarUtil.showError(context, "Error", e.toString());
+                    }
+                  } else {
+                    SnackbarUtil.showWarning(
+                      context,
+                      "Terms and Conditions",
+                      "Please accept the terms and conditions to proceed.",
+                    );
+                  }
+                },
+                child: Text("Sign Up",
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: Colors.white)),
               ),
             ),
             SizedBox(height: 20),

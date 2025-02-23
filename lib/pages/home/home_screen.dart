@@ -4,6 +4,7 @@ import 'package:expanse_tracker/core/components/section_tile.dart';
 import 'package:expanse_tracker/core/components/total_balance_tile.dart';
 import 'package:expanse_tracker/pages/home/add_budget.dart';
 import 'package:expanse_tracker/pages/home/all_goals.dart';
+import 'package:expanse_tracker/pages/home/budgets_screen.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
@@ -46,48 +47,53 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView(
+      body: SingleChildScrollView(
         padding:
             const EdgeInsets.only(top: 16.0, left: 16, right: 16, bottom: 100),
-        children: [
-          const TotalBalanceTile(),
-          const SizedBox(height: 20),
-          const IncomeExpenseRow(),
-          const SizedBox(height: 10),
-          const SectionTitle(title: "Expense Chart"),
-          const SizedBox(height: 10),
-          const ExpenseChart(),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const SectionTitle(title: "Goals"),
-              TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, AllGoals.routeName);
-                },
-                child: const Text("View All"),
-              ),
-            ],
-          ),
-          const GoalTile(
-            color: Colors.blue,
-            icon: Icons.local_play,
-            title: "Play Station",
-          ),
-          SizedBox(height: 10),
-          const GoalTile(
-            color: Colors.green,
-            icon: Icons.phone_android,
-            title: "Iphone",
-          ),
-          SizedBox(height: 10),
-          const GoalTile(
-            color: Colors.orange,
-            icon: Icons.car_rental,
-            title: "Fortuner",
-          ),
-        ],
+        child: Column(
+          children: [
+            const TotalBalanceTile(),
+            const SizedBox(height: 20),
+            const IncomeExpenseRow(),
+            const SizedBox(height: 10),
+            const SectionTitle(title: "Expense Chart"),
+            const SizedBox(height: 10),
+            const ExpenseChart(),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const SectionTitle(title: "Goals"),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, AllGoals.routeName);
+                  },
+                  child: const Text("View All"),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 200,
+              child: GoalsList(),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const SectionTitle(title: "Budgets"),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, AllGoals.routeName);
+                  },
+                  child: const Text("View All"),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 100,
+              child: BudgetListScreen(),
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         shape: const CircleBorder(),

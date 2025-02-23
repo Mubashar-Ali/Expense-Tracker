@@ -15,12 +15,16 @@ import 'package:expanse_tracker/pages/profile/edit_profile_screen.dart';
 import 'package:expanse_tracker/pages/survey/survery_screen.dart';
 import 'package:expanse_tracker/pages/wallet/add_bank_account_screen.dart';
 import 'package:expanse_tracker/pages/wallet/cash_wallet_screen.dart';
+import 'package:expanse_tracker/services/firebase_auth_services/auth_gate.dart';
 import 'package:flutter/material.dart';
 
 Route? myRoutes(RouteSettings settings) {
   return switch (settings.name) {
     SplashScreen.routeName => MaterialPageRoute(
         builder: (context) => const SplashScreen(),
+      ),
+    AuthGate.routeName => MaterialPageRoute(
+        builder: (context) => const AuthGate(),
       ),
     OnboardingScreen.routeName => MaterialPageRoute(
         builder: (context) => const OnboardingScreen(),

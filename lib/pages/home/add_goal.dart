@@ -1,4 +1,9 @@
+import 'package:expanse_tracker/models/goal_model.dart';
+import 'package:expanse_tracker/services/firestore_services/goals_services.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 
 class AddGoal extends StatefulWidget {
   const AddGoal({super.key});
@@ -10,12 +15,16 @@ class AddGoal extends StatefulWidget {
 }
 
 class _AddGoalState extends State<AddGoal> {
+  final TextEditingController _amountController = TextEditingController();
+  final GoalService _goalService = GoalService();
+
   String date = 'Target Date';
   String goalName = 'Goal Name';
   String goalDescription = 'Goal Description';
+  Color selectedColor = Colors.blue;
+  String selectedEmoji = "⭐";
 
   Future<void> _selectDateTime() async {
-    // Step 1: Show Date Picker
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -24,45 +33,9 @@ class _AddGoalState extends State<AddGoal> {
     );
 
     if (pickedDate != null) {
-      // Step 2: Show Time Picker
-      TimeOfDay? pickedTime = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.now(),
-      );
-
-      if (pickedTime != null) {
-        // Combine Date and Time
-        final DateTime combinedDateTime = DateTime(
-          pickedDate.year,
-          pickedDate.month,
-          pickedDate.day,
-          pickedTime.hour,
-          pickedTime.minute,
-        );
-
-        setState(() {
-          // Format to show "Today, 10:34"
-          date = _formatDateTime(combinedDateTime);
-        });
-      }
-    }
-  }
-
-  String _formatDateTime(DateTime dateTime) {
-    final DateTime now = DateTime.now();
-    final bool isToday = dateTime.day == now.day &&
-        dateTime.month == now.month &&
-        dateTime.year == now.year;
-
-    final String time =
-        "${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}";
-
-    if (isToday) {
-      return "Today, $time";
-    } else {
-      final String formattedDate =
-          "${dateTime.day}-${dateTime.month}-${dateTime.year}";
-      return "$formattedDate, $time";
+      setState(() {
+        date = "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
+      });
     }
   }
 
@@ -78,99 +51,194 @@ class _AddGoalState extends State<AddGoal> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Add Goal'),
-        actions: [
-          TextButton(
-            child: Text("Save"),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      body: ListView(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: TextField(
-              textAlign: TextAlign.right,
-              decoration: InputDecoration(
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 2.0),
-                ),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide:
-                      BorderSide(color: Colors.grey.shade300, width: 1.0),
-                ),
-
-                prefixText: "Amount",
-                prefixStyle:
-                    TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                // border: OutlineInputBorder(
-                //   borderSide: BorderSide(),
-                // ),
-              ),
+  Future<void> _pickColor() async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Pick a Color"),
+          content: SingleChildScrollView(
+            child: BlockPicker(
+              pickerColor: selectedColor,
+              onColorChanged: (color) {
+                setState(() {
+                  selectedColor = color;
+                });
+                Navigator.of(context).pop();
+              },
             ),
           ),
-          ListTile(
-            title: Text(date),
-            trailing: Icon(Icons.arrow_forward_ios, size: 15),
-            leading: const Icon(Icons.calendar_today),
-            onTap: _selectDateTime,
+        );
+      },
+    );
+  }
+
+  Future<void> _pickEmoji() async {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return SizedBox(
+          height: 700,
+          child: EmojiPicker(
+            onEmojiSelected: (category, emoji) {
+              setState(() {
+                selectedEmoji = emoji.emoji;
+              });
+              Navigator.of(context).pop();
+            },
           ),
-          ListTile(
-            title: Text(goalName),
-            leading: const Icon(Icons.account_balance),
-            trailing: Icon(Icons.arrow_forward_ios, size: 15),
-            onTap: () => navigateGoalPage('Goal Name'),
-          ),
-          ListTile(
-            title: Text(goalDescription),
-            trailing: Icon(Icons.arrow_forward_ios, size: 15),
-            leading: const Icon(Icons.category),
-            onTap: () => navigateGoalPage('Goal Description'),
-          ),
-        ],
+        );
+      },
+    );
+  }
+
+  Future<void> _saveGoal() async {
+    if (goalName == 'Goal Name' ||
+        goalDescription == 'Goal Description' ||
+        _amountController.text.isEmpty ||
+        date == 'Target Date') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please fill in all fields")),
+      );
+      return;
+    }
+
+    final double amount = double.tryParse(_amountController.text) ?? 0.0;
+
+    // Get current user
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("User not logged in")),
+      );
+      return;
+    }
+
+    final goal = GoalModel(
+      title: goalName,
+      savedAmount: 0.0,
+      totalAmount: amount,
+      colorHex: selectedColor.value
+          .toRadixString(16)
+          .padLeft(8, '0'), // Convert Color to hex
+      emoji: selectedEmoji,
+    );
+
+    await _goalService.addGoal(goal);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Goal added successfully!")),
+    );
+
+    Navigator.pop(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(), // Dismiss keyboard on tap
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Add Goal'),
+          actions: [
+            TextButton(
+              onPressed: _saveGoal,
+              child: const Text("Save"),
+            ),
+          ],
+        ),
+        body: ListView(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: TextField(
+                controller: _amountController,
+                textAlign: TextAlign.right,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  focusedBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 2.0),
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Colors.grey.shade300, width: 1.0),
+                  ),
+                  prefixText: "Amount",
+                  prefixStyle: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text(date),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 15),
+              leading: const Icon(Icons.calendar_today),
+              onTap: _selectDateTime,
+            ),
+            ListTile(
+              title: Text(goalName),
+              leading: const Icon(Icons.account_balance),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 15),
+              onTap: () => navigateGoalPage('Goal Name'),
+            ),
+            ListTile(
+              title: Text(goalDescription),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 15),
+              leading: const Icon(Icons.category),
+              onTap: () => navigateGoalPage('Goal Description'),
+            ),
+            ListTile(
+              title: Text("Selected Emoji: $selectedEmoji"),
+              leading: const Icon(Icons.emoji_emotions),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 15),
+              onTap: _pickEmoji,
+            ),
+            ListTile(
+              title: const Text("Pick Color"),
+              leading: CircleAvatar(backgroundColor: selectedColor),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 15),
+              onTap: _pickColor,
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
 class GoalNameScreen extends StatefulWidget {
-  const GoalNameScreen({super.key, required this.page});
-
   final String page;
+
+  const GoalNameScreen({super.key, required this.page});
 
   @override
   State<GoalNameScreen> createState() => _GoalNameScreenState();
 }
 
 class _GoalNameScreenState extends State<GoalNameScreen> {
-  final controller = TextEditingController();
+  final TextEditingController _textController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.page),
+        title: Text("Edit ${widget.page}"),
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.pop(context, controller.text);
+              Navigator.pop(context, _textController.text.trim());
             },
-            child: Text('Save'),
-          )
+            child: const Text("Save"),
+          ),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: TextField(
-          controller: controller,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: 'Enter text here',
+          controller: _textController,
+          decoration: InputDecoration(
+            labelText: widget.page,
+            border: const OutlineInputBorder(),
           ),
         ),
       ),

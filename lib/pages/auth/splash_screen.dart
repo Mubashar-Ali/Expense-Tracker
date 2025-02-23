@@ -1,4 +1,5 @@
 import 'package:expanse_tracker/pages/auth/onboarding_screen.dart';
+import 'package:expanse_tracker/services/firebase_auth_services/splash_screen_service.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -44,6 +45,7 @@ class _SplashScreenState extends State<SplashScreen>
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.pushReplacementNamed(context, OnboardingScreen.routeName);
     });
+    SplashScreenServices.isLogin(context);
   }
 
   @override

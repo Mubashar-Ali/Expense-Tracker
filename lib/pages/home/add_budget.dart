@@ -1,3 +1,5 @@
+import 'package:expanse_tracker/models/budget_model.dart';
+import 'package:expanse_tracker/services/firestore_services/budget_services.dart';
 import 'package:flutter/material.dart';
 
 class AddBudget extends StatefulWidget {
@@ -129,9 +131,36 @@ class _AddBudgetState extends State<AddBudget> {
       appBar: AppBar(
         title: Text('Add Transaction'),
         actions: [
-          IconButton(
-            icon: Icon(Icons.save),
-            onPressed: () {},
+          TextButton(
+            child: Text("Save"),
+            onPressed: () async {
+              if (budget == 'Budget Name' || category == 'Select Category') {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                      content: Text('Please fill in all required fields!')),
+                );
+                return;
+              }
+
+              final double amount = 1000.0; // Replace with user-entered amount
+              final BudgetModel newBudget = BudgetModel(
+                name: budget,
+                category: category,
+                period: date,
+                overspent: isBudgetoverspent,
+                seventyFivePercentExceeded: is75,
+                amount: amount,
+              );
+
+              final BudgetService budgetService = BudgetService();
+              await budgetService.addBudget(newBudget);
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Budget added successfully!')),
+              );
+
+              Navigator.pop(context); // Close the screen
+            },
           ),
         ],
       ),
